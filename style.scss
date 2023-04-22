@@ -1,0 +1,63 @@
+$num: 12;
+$c: #ff8500, #23912c;
+$r: 7.5em;
+$b: 2.25em;
+$n: 4;
+$t: 2.5s;
+
+body, div { display: grid }
+
+div, ::before, ::after { grid-area: 1/ 1 }
+
+body {
+  margin: 0;
+  height: 100vh;
+  
+  &::before, &::after {
+    background: lemonchiffon;
+    content: ''
+  }
+  
+  &::after {
+    place-self: center;
+    padding: $r;
+    background: linear-gradient(-45deg, $c);
+    mix-blend-mode: lighten
+  }
+}
+
+.load {
+  background: #fff;
+  filter: blur($num*1px) contrast(3*$num) blur(1px);
+  mix-blend-mode: darken;
+  
+  &::before, &::after {
+    --i: 0;
+    --sgn-i: calc(2*var(--i) - 1);
+    --den: calc(1 + (#{$n} - 1)*var(--i));
+    place-self: center;
+    margin: $b;
+    padding: $r;
+    border-radius: 50%;
+    background: 
+      repeating-conic-gradient(
+        from calc(.5turn/var(--den)*var(--i)),
+        #000 0% calc(50%/var(--den)), 
+        transparent 0% calc(100%/var(--den)));
+    
+      radial-gradient(closest-side, 
+        transparent calc(100% - #{$b}), 
+        red calc(100% - #{$b} + 1px) calc(100% - 1px), 
+        transparent);
+    animation: r calc(#{$t}/var(--den)) cubic-bezier(0, .15, 1, .85) infinite;
+    content: ''
+  }
+
+&::before { animation-timing-function: steps(2*$n, start) }
+  
+  &::after { --i: 1 }
+}
+
+@keyframes r {
+  to { transform: rotate(calc(var(--sgn-i)*1turn/var(--den))) }
+}
